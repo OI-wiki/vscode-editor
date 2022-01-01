@@ -2,7 +2,6 @@ import fse from "fs-extra";
 const { mkdir, rm, existsSync, copy, readFile, writeFile } = fse;
 
 import { execSync } from 'child_process';
-import { getExtensions } from "./ext.js";
 
 const VSCODE_REPO = "https://github.com/microsoft/vscode";
 const VSCODE_VERSION = "1.63.2";
@@ -67,6 +66,7 @@ async function build() {
 
 
     // write extensions list to another file to avoid long inline html meta
+    const { getExtensions } = await import('./ext.js');
     const extensions = await getExtensions();
     const extJs = `var __extensions = ${JSON.stringify(extensions)}`;
     await writeFile("./public/extensions.js", extJs);
