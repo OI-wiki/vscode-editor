@@ -54,7 +54,8 @@ function escapeAttribute(value) {
 
 async function build() {
     await copy("./vscode/out-vscode-min/vs", "./public/vs");
-    await copy("./vscode/extensions", "./public/extensions");
+    // too many files breaks GitHub Pages, gg
+    // await copy("./vscode/extensions", "./public/extensions");
     await copy("./shadow", "./public");
 
     const webConfig = JSON.parse((await readFile("./webConfig.json")).toString());
@@ -68,6 +69,12 @@ async function build() {
     // write extensions list to another file to avoid long inline html meta
     const { getExtensions } = await import('./ext.js');
     const extensions = await getExtensions();
+    for (const ext of extensions) {
+        await copy(
+            `./vscode/extensions/${ext.extensionPath}`, 
+            `./public/extensions/${ext.extensionPath}`);
+    }
+
     const extJs = `var __extensions = ${JSON.stringify(extensions)}`;
     await writeFile("./public/extensions.js", extJs);
     

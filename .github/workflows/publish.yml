@@ -46,7 +46,7 @@ jobs:
       - run: yarn install
 
       - run: yarn build
-      - run: pwd && ls -al && ls -al public
+      - run: ls -al public && find public -type f | wc -l
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
