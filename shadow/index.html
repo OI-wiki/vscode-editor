@@ -1,0 +1,60 @@
+<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<script>
+			performance.mark('code/didStartRenderer');
+		</script>
+		<meta charset="utf-8" />
+
+		<!-- Mobile tweaks -->
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="Code">
+		<link rel="apple-touch-icon" href="/code-192.png" />
+
+		<!-- Disable pinch zooming -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+
+		<!-- Workbench Configuration -->
+		<meta id="vscode-workbench-web-configuration" data-settings="{&quot;folderUri&quot;:{&quot;scheme&quot;:&quot;memfs&quot;,&quot;path&quot;:&quot;/&quot;},&quot;additionalBuiltinExtensions&quot;:[]}">
+
+		<!-- Workbench Auth Session -->
+		<meta id="vscode-workbench-auth-session" data-settings="">
+
+		<!-- Extensions -->
+		<meta id="vscode-workbench-builtin-extensions" data-settings="">
+
+		<!-- Workbench Icon/Manifest/CSS -->
+		<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="manifest" href="/manifest.json">
+		<link data-name="vs/workbench/workbench.web.api" rel="stylesheet" href="./vs/workbench/workbench.web.api.css">
+
+	</head>
+
+	<body aria-label="">
+	</body>
+	
+	<!-- Startup (do not modify order of script tags!) -->
+	<script src="./extensions.js"></script>
+	<script>
+		const extElement = document.getElementById("vscode-workbench-builtin-extensions");
+    	extElement.attributes["data-settings"].value = JSON.stringify(__extensions);
+
+		let baseUri = `${window.location.origin}`;
+		self.require = {
+			baseUrl: `${baseUri}`,
+			path: {
+				"extension": `${baseUri}/extensions`,
+			}
+		}
+	</script>
+
+	<script src="./vs/loader.js"></script>
+	<script>
+		performance.mark('code/willLoadWorkbenchMain');
+	</script>
+	<script src="./vs/workbench/workbench.web.api.nls.js"></script>
+	<script src="./vs/workbench/workbench.web.api.js"></script>
+	<script src="./vs/code/browser/workbench/workbench.js"></script>
+</html>

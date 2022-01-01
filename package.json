@@ -1,0 +1,19 @@
+{
+  "name": "vscode-editor",
+  "version": "1.0.0",
+  "description": "Build script of vscode web editor",
+  "repository": "https://github.com/diauweb/vscode-editor",
+  "author": "Xiaodai Dai <diauweb@live.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node ./build.js",
+    "serve": "node ./serve.js"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0"
+  },
+  "devDependencies": {
+    "express": "^4.17.2"
+  }
+}
