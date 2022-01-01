@@ -46,12 +46,14 @@ jobs:
       - run: yarn install
 
       - run: yarn build
-
+      - run: pwd && ls -al && ls -al public
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # why?
           publish_dir: ./public
           force_orphan: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
+          cname: editor.akioi.icu
