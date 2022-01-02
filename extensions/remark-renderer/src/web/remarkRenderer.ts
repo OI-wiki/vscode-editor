@@ -3,15 +3,15 @@ import remarkDirective from "remark-directive";
 import remarkDetails from "remark-details";
 import rehypeStringify from 'rehype-stringify/lib';
 import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import remarkParse from 'remark-parse';
 
-function getPipeline() {
+export function getPipeline() {
     return unified()
+        .use(remarkParse)
         .use(remarkDirective)
         .use(remarkDetails)
         .use(remarkGfm)
+        .use(remarkRehype)
         .use(rehypeStringify);
-}
-
-export function renderHtml(text: string): string {
-    return getPipeline().processSync(text).toString();
 }

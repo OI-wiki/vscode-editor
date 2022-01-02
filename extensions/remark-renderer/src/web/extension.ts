@@ -1,20 +1,44 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import RendererPanel from './rendererPanel';
+import { getPipeline } from './remarkRenderer';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const renderer = getPipeline();
+
 export function activate(context: vscode.ExtensionContext) {
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('remark-renderer.rendererView', () => {
-		RendererPanel.createOrShow(context.extensionUri);
+		const text = vscode.window.activeTextEditor?.document.getText() ?? "*No preview available*";
+		
+		const panel = vscode.window.createWebviewPanel(
+			'mdRenderer',
+			'Remark Renderer',
+			vscode.ViewColumn.Beside,
+			{}
+		);
+
+		panel.webview.html = getHtml(panel.webview, text, context.extensionUri);
 	});
 
 	context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
+function getHtml(webview: vscode.Webview, md: string, extensionUri: vscode.Uri) : string {
+	const html = renderer.processSync(md).toString();
+	const styleUri = vscode.Uri.joinPath(extensionUri, 'media', 'style.css');
+
+	return `<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https:; script-src ${webview.cspSource}; style-src ${webview.cspSource};" />
+			<title>Render Preview</title>
+			<link href="${webview.asWebviewUri(styleUri)}" rel="stylesheet">
+		</head>
+		<body>
+			<article>
+				${html}
+			</article>
+		</body>
+	</html>`;
+}
+
 export function deactivate() {}
