@@ -1,0 +1,5 @@
+{
+    "name": "extensions",
+    "private": true,
+    "workspaces": ["remark-renderer"]
+}

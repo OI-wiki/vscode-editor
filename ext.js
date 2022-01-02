@@ -21,6 +21,30 @@ const wantExtensions = [
     'yaml',
 ];
 
+async function getCustomExtensions() {
+    const customExts = [];
+    for(const ext of fse.readdirSync("./extensions")) {
+        const dir = `./extensions/${ext}`;
+
+        if (!fse.existsSync(`${dir}/package.json`)) continue;
+
+        const packageJSON = JSON.parse((await fse.readFile(`${dir}/package.json`)));
+
+        let packageNLS = {};
+        if (fse.existsSync(`${dir}/package.nls.json`)) {
+            packageNLS = JSON.parse((await fse.readFile(`${dir}/package.nls.json`)));
+        }
+
+        customExts.push({
+            customPath: dir,
+            packageJSON,
+            packageNLS,
+            extensionPath: ext,
+        });
+    }
+    return customExts;
+}
+
 export async function scanExtensions() {
     const allExtensions = [];
     
@@ -30,17 +54,10 @@ export async function scanExtensions() {
     chdir("..");
     
     allExtensions.push(...extensions);
-
-    // additional extensions
-    // allExtensions.push(...);
-
     return allExtensions;
 }
 
-export async function getExtensions() {
-    return scanExtensions();
-}
-
+// customize vscode bundled extensions
 export async function getWantedExtensions() {
     const allExtensions = [];
     for (const f of wantExtensions) {
@@ -48,7 +65,7 @@ export async function getWantedExtensions() {
         if (fse.existsSync(dir)) {
             const packageJSON = JSON.parse((await fse.readFile(`${dir}/package.json`)));
             const packageNLS = JSON.parse((await fse.readFile(`${dir}/package.nls.json`)));
-
+            
             allExtensions.push({
                 packageJSON,
                 packageNLS,
@@ -56,6 +73,10 @@ export async function getWantedExtensions() {
             })
         }
     }
-
+    
     return allExtensions;
+}
+
+export async function getExtensions() {
+    return [...await scanExtensions(), ...await getCustomExtensions()];
 }

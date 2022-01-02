@@ -24,6 +24,7 @@ async function clean() {
 async function prepareInstall() {
     run(`git clone -b ${VSCODE_VERSION} --depth=1 ${VSCODE_REPO} ./vscode`);
     run(`yarn install`, './vscode');
+    run(`yarn install`, './extensions');
 }
 
 async function buildVSCode() {
@@ -46,6 +47,9 @@ async function buildVSCode() {
     run(`yarn gulp compile-build`, './vscode');
     run(`yarn gulp minify-vscode`, './vscode');
     run(`yarn compile-web`, './vscode');
+    for(const ext of fse.readdirSync("./extensions")) {
+        run(`yarn workspace ${ext} package-web`, './extensions');
+    }
 }
 
 function escapeAttribute(value) {
@@ -69,7 +73,7 @@ async function build() {
     const extensions = await getExtensions();
     for (const ext of extensions) {
         await copy(
-            `./vscode/extensions/${ext.extensionPath}`, 
+            ext.customPath ?? `./vscode/extensions/${ext.extensionPath}`, 
             `./public/extensions/${ext.extensionPath}`, 
             {
                 // web extensions do not require a node_modules to run
