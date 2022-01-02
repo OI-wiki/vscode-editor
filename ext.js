@@ -3,7 +3,7 @@ import { scanBuiltinExtensions } from "./vscode/build/lib/extensions.js";
 import { chdir } from "process";
 import fse from "fs-extra";
 
-const EXTENSIONS_ROOT = "./vscode/extensions";
+const EXTENSIONS_ROOT = "./extensions";
 
 const wantExtensions = [
     'configuration-editing',
@@ -38,6 +38,10 @@ export async function scanExtensions() {
 }
 
 export async function getExtensions() {
+    return scanExtensions();
+}
+
+export async function getWantedExtensions() {
     const allExtensions = [];
     for (const f of wantExtensions) {
         const dir = `./vscode/extensions/${f}`;

@@ -54,8 +54,6 @@ function escapeAttribute(value) {
 
 async function build() {
     await copy("./vscode/out-vscode-min/vs", "./public/vs");
-    // too many files breaks GitHub Pages, gg
-    // await copy("./vscode/extensions", "./public/extensions");
     await copy("./shadow", "./public");
 
     const webConfig = JSON.parse((await readFile("./webConfig.json")).toString());
@@ -72,7 +70,12 @@ async function build() {
     for (const ext of extensions) {
         await copy(
             `./vscode/extensions/${ext.extensionPath}`, 
-            `./public/extensions/${ext.extensionPath}`);
+            `./public/extensions/${ext.extensionPath}`, 
+            {
+                // web extensions do not require a node_modules to run
+                // and node_modules is flooding too much files in the build
+                filter: (f) => f.indexOf('node_modules') == -1
+            });
     }
 
     const extJs = `var __extensions = ${JSON.stringify(extensions)}`;
@@ -86,6 +89,16 @@ async function build() {
 }
 
 async function main() {
+    const cmd = process.argv?.[2];
+    if (cmd) {
+        switch (cmd) {
+            case "clean": await clean(); return;
+            case "prepare": await prepareInstall(); return;
+            case "vsc": await buildVSCode(); return;
+            case "build": await build(); return;
+            default: console.log("unrecognized command", cmd); return;
+        }
+    }
     await clean();
     await prepareInstall();
     await buildVSCode();
