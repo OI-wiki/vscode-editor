@@ -47,9 +47,7 @@ async function buildVSCode() {
     run(`yarn gulp compile-build`, './vscode');
     run(`yarn gulp minify-vscode`, './vscode');
     run(`yarn compile-web`, './vscode');
-    for(const ext of fse.readdirSync("./extensions")) {
-        run(`yarn workspace ${ext} package-web`, './extensions');
-    }
+    run(`yarn workspaces run package-web`, "./extensions");
 }
 
 function escapeAttribute(value) {
