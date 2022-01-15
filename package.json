@@ -11,8 +11,7 @@
     "serve": "node ./serve.js"
   },
   "dependencies": {
-    "fs-extra": "^10.0.0",
-    "vinyl-fs": "^3.0.3"
+    "fs-extra": "^10.0.0"
   },
   "devDependencies": {
     "express": "^4.17.2"

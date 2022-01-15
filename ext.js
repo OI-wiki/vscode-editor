@@ -1,8 +1,7 @@
 import { getBuiltInExtensions } from "./vscode/build/lib/builtInExtensions.js";
-import { fromMarketplace, scanBuiltinExtensions } from "./vscode/build/lib/extensions.js";
+import { scanBuiltinExtensions } from "./vscode/build/lib/extensions.js";
 import { chdir } from "process";
 import fse from "fs-extra";
-import vfs from 'vinyl-fs';
 
 const EXTENSIONS_ROOT = "./extensions";
 
@@ -46,9 +45,9 @@ async function getCustomExtensions() {
     return customExts;
 }
 
-async function downloadRemote(name, verison) {
-    const destDir = `./.build/extensions/${name}`;
-    fromMarketplace(name, verison, {}).pipe(vfs.dest(destDir));
+// add name and version in product.json
+async function addRemote(name) {
+    const destDir = `./.build/builtInExtensions/${name}`;
 
     const packageJSON = JSON.parse((await fse.readFile(`${destDir}/package.json`)));
     let packageNLS = {};
@@ -57,10 +56,10 @@ async function downloadRemote(name, verison) {
     }
     
     return {
-            customPath: destDir,
-            packageJSON,
-            packageNLS,
-            extensionPath: name,
+        customPath: destDir,
+        packageJSON,
+        packageNLS,
+        extensionPath: name,
     };
 }
 
@@ -71,8 +70,7 @@ export async function scanExtensions() {
     await getBuiltInExtensions();
     const extensions = scanBuiltinExtensions(EXTENSIONS_ROOT);
     chdir("..");
-
-    allExtensions.push(await downloadRemote("github.remotehub", "0.21.2022011309", {}));
+    allExtensions.push(await addRemote("github.remotehub"));
     
     allExtensions.push(...extensions);
     return allExtensions;

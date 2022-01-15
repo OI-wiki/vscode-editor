@@ -29,9 +29,16 @@ async function prepareInstall() {
 
 async function buildVSCode() {
 
+    async function mutateFile(p, cb) {
+        let f = await readFile(p, { encoding: "utf8", flag: "r" })
+        f = await cb(f)
+        await writeFile(p, f);
+    }
+
+    
     const gulpfilePath = "./vscode/build/gulpfile.vscode.js";
-    const gulpfile = (await readFile(gulpfilePath, { encoding: "utf8", flag: "r" }))
-        .replace(
+    mutateFile(gulpfilePath, async (f) => {
+        return f.replace(
             /vs\/workbench\/workbench.desktop.main/g,
             "vs/workbench/workbench.web.api"
         )
@@ -39,10 +46,16 @@ async function buildVSCode() {
             /buildfile.workbenchDesktop/g,
             "buildfile.workbenchWeb,buildfile.keyboardMaps"
         );
+    });
+
+    // const productPath = "./vscode/src/vs/platform/product/common/product.ts";
+    // mutateFile(productPath, async (f) => {
+    //     const product = JSON.stringify(JSON.parse(await readFile("./build-shadow/product.json")));
+    //     const str = product.substring(1, product.length - 1);
+    //     return f.replace("/*BUILD->INSERT_PRODUCT_CONFIGURATION*/", str);
+    // });
     
-    await writeFile(gulpfilePath, gulpfile);
-    
-    await copy("./build-shadow", "./vscode")
+    await copy("./build-shadow", "./vscode");
 
     run(`yarn gulp compile-build`, './vscode');
     run(`yarn gulp minify-vscode`, './vscode');
