@@ -1,4 +1,4 @@
 {
-    "folderUri": { "scheme": "memfs", "path": "/" },
+    "folderUri": { "scheme": "github", "path": "/oi-wiki/oi-wiki" },
     "additionalBuiltinExtensions": []
 }
