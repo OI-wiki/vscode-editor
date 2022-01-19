@@ -1,5 +1,5 @@
 import fse from "fs-extra";
-const { mkdir, rm, existsSync, copy, readFile, writeFile } = fse;
+const { rm, existsSync, copy, readFile, writeFile } = fse;
 
 import { execSync } from 'child_process';
 
@@ -31,6 +31,8 @@ async function buildVSCode() {
 
     run(`git reset --hard`, './vscode');
     run(`git apply ../patches/*.patch`, './vscode');
+    await copy('./product.json', './vscode/product.json');
+
 
     run(`yarn gulp compile-build`, './vscode');
     run(`yarn gulp minify-vscode`, './vscode');
