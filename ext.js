@@ -70,9 +70,13 @@ export async function scanExtensions() {
     await getBuiltInExtensions();
     const extensions = scanBuiltinExtensions(EXTENSIONS_ROOT);
     chdir("..");
-    allExtensions.push(await addRemote("github.remotehub"));
-    
     allExtensions.push(...extensions);
+    
+    const product = JSON.parse((await fse.readFile("./product.json")).toString());
+    for (const ext of product["builtInExtensions"]) {
+        allExtensions.push(await addRemote(ext.name));
+    }
+
     return allExtensions;
 }
 
