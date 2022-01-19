@@ -1,4 +1,4 @@
 {
-    "folderUri": { "scheme": "github", "path": "/oi-wiki/oi-wiki" },
+    "folderUri": { "scheme": "vscode-vfs", "path": "github/OI-Wiki/OI-Wiki" },
     "additionalBuiltinExtensions": []
 }
