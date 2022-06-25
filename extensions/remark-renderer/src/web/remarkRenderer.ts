@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { unified } from 'unified';
 import remarkDirective from "remark-directive";
 import remarkDetails from "remark-details";

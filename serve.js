@@ -1,7 +1,7 @@
 import express from 'express';
 import serveStatic from 'serve-static';
 
-var staticBasePath = './public';
+var staticBasePath = './vscode';
  
 var app = express();
  

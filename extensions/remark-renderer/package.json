@@ -19,6 +19,12 @@
 				"command": "remark-renderer.rendererView",
 				"title": "Remark Render View"
 			}
+		],
+		"snippets": [
+			{
+				"language": "markdown",
+				"path": "./snippets/snippets.json"
+			}
 		]
 	},
 	"scripts": {
@@ -33,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^9.0.0",
-		"@types/vscode": "^1.63.0",
+		"@types/vscode": "^1.67.0",
 		"@types/webpack-env": "^1.16.2",
 		"@typescript-eslint/eslint-plugin": "^5.1.0",
 		"@typescript-eslint/parser": "^5.1.0",

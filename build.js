@@ -95,4 +95,4 @@ async function main() {
     await build();
 }
 
-await main();
+main();
