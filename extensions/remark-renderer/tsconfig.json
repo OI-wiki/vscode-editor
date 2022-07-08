@@ -4,10 +4,10 @@
 		"target": "es6",
 		"outDir": "dist",
 		"lib": [
-			"es6", "WebWorker"
+			"es6", "WebWorker","DOM"
 		],
 		"sourceMap": true,
-		"rootDir": "src",
+		"rootDir": ".",
 		"strict": true   /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

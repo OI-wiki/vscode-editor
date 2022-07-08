@@ -1,5 +1,5 @@
 import fse from "fs-extra";
-const { rm, existsSync, copy, readFile, writeFile } = fse;
+const { rm, existsSync, copy, readFile, writeFile, access } = fse;
 
 import { execSync } from 'child_process';
 
@@ -16,13 +16,13 @@ async function clean() {
         await rm("./public", { recursive: true, force: true });
     }
 
-    if(existsSync("./vscode")) {
-        await rm("./vscode", { recursive: true, force: true });
-    }
+    // if(existsSync("./vscode")) {
+    //     await rm("./vscode", { recursive: true, force: true });
+    // }
 }
 
 async function prepareInstall() {
-    run(`git clone -b ${VSCODE_VERSION} --depth=1 ${VSCODE_REPO} ./vscode`);
+    if(!existsSync("./vscode")) run(`git clone -b ${VSCODE_VERSION} --depth=1 ${VSCODE_REPO} ./vscode`);
     run(`yarn install`, './vscode');
     run(`yarn install`, './extensions');
 }
@@ -30,7 +30,7 @@ async function prepareInstall() {
 async function buildVSCode() {
 
     run(`git reset --hard`, './vscode');
-    run(`git apply ../patches/*.patch`, './vscode');
+    // run(`git apply ../patches/*.patch`, './vscode');
     await copy('./product.json', './vscode/product.json');
 
 
