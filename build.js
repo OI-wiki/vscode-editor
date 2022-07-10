@@ -16,13 +16,13 @@ async function clean() {
         await rm("./public", { recursive: true, force: true });
     }
 
-    // if(existsSync("./vscode")) {
-    //     await rm("./vscode", { recursive: true, force: true });
-    // }
+    if(existsSync("./vscode")) {
+        await rm("./vscode", { recursive: true, force: true });
+    }
 }
 
 async function prepareInstall() {
-    if(!existsSync("./vscode")) run(`git clone -b ${VSCODE_VERSION} --depth=1 ${VSCODE_REPO} ./vscode`);
+    run(`git clone -b ${VSCODE_VERSION} --depth=1 ${VSCODE_REPO} ./vscode`);
     run(`yarn install`, './vscode');
     run(`yarn install`, './extensions');
 }
@@ -30,7 +30,7 @@ async function prepareInstall() {
 async function buildVSCode() {
 
     run(`git reset --hard`, './vscode');
-    // run(`git apply ../patches/*.patch`, './vscode');
+    run(`git apply ../patches/*.patch`, './vscode');
     await copy('./product.json', './vscode/product.json');
 
 
@@ -95,4 +95,4 @@ async function main() {
     await build();
 }
 
-main();
+await main();
