@@ -26,7 +26,7 @@ export default function rehypeSourceLine(options?:Options) {
               node.properties = {[propertyName]:node.position.start.line};
             }
           }
-
+          node.properties.class = 'code-line';
         }
     });
   };

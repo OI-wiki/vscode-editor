@@ -40,7 +40,8 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 			panel.webview.postMessage({
 				command: "changeTextEditorSelection",
-				line: midLine,
+				// line:midLine,
+				line: e.textEditor["visibleRanges"][0].start.line,
 			});
 		});
 	});
