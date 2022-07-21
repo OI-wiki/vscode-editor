@@ -19,7 +19,7 @@ const webExtensionConfig = {
 	entry: {
 		'extension': './src/web/extension.ts',
 		'test/suite/index': './src/web/test/suite/index.ts',
-		'media/webview': './media/webview.ts'
+		'preview-src/index': './preview-src/index.ts'
 	},
 	output: {
 		filename: '[name].js',

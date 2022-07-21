@@ -1,12 +1,16 @@
 import * as vscode from 'vscode';
 import { getPipeline } from './remarkRenderer';
 import WebResource from './webresource';
+import MarkdownPreview from './preview';
+
+const throttle = require('lodash.throttle');
 
 const renderer = getPipeline();
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('remark-renderer.rendererView', () => {
-		const text = vscode.window.activeTextEditor?.document.getText() ?? "*No preview available*";
+		const editor = vscode.window.activeTextEditor;
+		const text = editor?.document.getText() ?? "*No preview available*";
 		const panel = vscode.window.createWebviewPanel(
 			'mdRenderer',
 			'Preview',
@@ -15,35 +19,25 @@ export function activate(context: vscode.ExtensionContext) {
 				enableScripts: true,
 			}
 		);
-		// panel.webview.onDidReceiveMessage(
-		// 	(message) => {
-		// 	  console.log('message',message);
-		// 	  vscode.commands.executeCommand(
-		// 		`_mume.${message.command}`,
-		// 		...message.args,
-		// 	  );
-		// 	},
-		// 	null,
-		// 	context.subscriptions,
-		//   );
+		const markdownPreview = new MarkdownPreview(panel,editor);
 		panel.webview.html = getHtml(panel.webview, text, context.extensionUri);
 		vscode.window.onDidChangeTextEditorSelection((e:vscode.TextEditorSelectionChangeEvent)=>{
 			const newText = e.textEditor.document.getText();
 			panel.webview.html = getHtml(panel.webview, newText, context.extensionUri);
 		});
-		vscode.window.onDidChangeTextEditorVisibleRanges((e)=>{
-			const topLine = getTopVisibleLine(e.textEditor);
-			const bottomLine = getBottomVisibleLine(e.textEditor);
-			let midLine;
-			if(topLine&&bottomLine){
-				midLine = Math.floor((topLine + bottomLine) / 2);
-			}
+		vscode.window.onDidChangeTextEditorVisibleRanges(throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
+			// const topLine = getTopVisibleLine(e.textEditor);
+			// const bottomLine = getBottomVisibleLine(e.textEditor);
+			// let midLine;
+			// if(topLine&&bottomLine){
+			// 	midLine = Math.floor((topLine + bottomLine) / 2);
+			// }
 			panel.webview.postMessage({
 				command: "changeTextEditorSelection",
 				// line:midLine,
 				line: e.textEditor["visibleRanges"][0].start.line,
 			});
-		});
+		},100));
 	});
 
 	context.subscriptions.push(disposable);

@@ -54,6 +54,7 @@
 		"webpack-cli": "^4.8.0"
 	},
 	"dependencies": {
+		"lodash.throttle": "^4.1.1",
 		"rehype-stringify": "^9.0.2",
 		"remark": "^14.0.2",
 		"remark-details": "^4.0.4",
