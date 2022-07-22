@@ -12,6 +12,7 @@ class PreviewController {
     public cachedElements:CodeLineElement[] = [];
 
     public codeLineClass = 'code-line';
+    public isFromEditor: boolean = false;
 
     constructor(){
         this.getCodeLineElements();
@@ -20,12 +21,14 @@ class PreviewController {
     
     public initListener(){
         window.addEventListener('message',(e)=>{
+            this.isFromEditor = true;
             this.scrollToRevealSourceLine(e.data.line);
-            console.log(e.data.line);
-            
+            setTimeout(()=>{
+                this.isFromEditor = false;
+            },100);
         });
         window.addEventListener('scroll',throttle(()=>{
-            console.log('scroll');
+            if(this.isFromEditor) return;
             const line = this.getEditorLineNumberForPageOffset(window.scrollY);
             vscode.postMessage({
                 command:'revealLine',
