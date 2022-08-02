@@ -4,10 +4,13 @@ import MarkdownPreview from './preview';
 
 const throttle = require('lodash.throttle');
 
-
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('remark-renderer.rendererView', () => {
 		const editor = vscode.window.activeTextEditor;
+		if(editor?.document.languageId !== 'markdown') {
+			vscode.window.showErrorMessage("It's not a markdown file");
+			return;
+		}
 		const panel = vscode.window.createWebviewPanel(
 			'mdRenderer',
 			'Preview',
@@ -21,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const newText = e.textEditor.document.getText();
 			panel.webview.html = markdownPreview.getHtml(newText);
 		});
-		vscode.window.onDidChangeTextEditorVisibleRanges((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
+		vscode.window.onDidChangeTextEditorVisibleRanges(throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
 			// const topLine = getTopVisibleLine(e.textEditor);
 			// const bottomLine = getBottomVisibleLine(e.textEditor);
 			// let midLine;
@@ -34,40 +37,11 @@ export function activate(context: vscode.ExtensionContext) {
 				// line:midLine,
 				line: e.textEditor["visibleRanges"][0].start.line,
 			});
-		});
+		}),100);
 	});
 
 	context.subscriptions.push(disposable);
 	
 }
 
-
-function getTopVisibleLine(
-	editor: vscode.TextEditor,
-  ): number | undefined {
-	if (!editor["visibleRanges"].length) {
-	  return undefined;
-	}
-	const firstVisiblePosition = editor["visibleRanges"][0].start;
-	const lineNumber = firstVisiblePosition.line;
-	const line = editor.document.lineAt(lineNumber);
-	const progress = firstVisiblePosition.character / (line.text.length + 2);
-	return lineNumber + progress;
-  }
-function getBottomVisibleLine(
-editor: vscode.TextEditor,
-): number | undefined {
-	if (!editor["visibleRanges"].length) {
-		return undefined;
-	}
-
-	const firstVisiblePosition = editor["visibleRanges"][0].end;
-	const lineNumber = firstVisiblePosition.line;
-	let text = "";
-	if (lineNumber < editor.document.lineCount) {
-		text = editor.document.lineAt(lineNumber).text;
-	}
-	const progress = firstVisiblePosition.character / (text.length + 2);
-	return lineNumber + progress;
-}
 export function deactivate() {}

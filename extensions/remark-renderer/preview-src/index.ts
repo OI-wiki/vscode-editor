@@ -1,8 +1,7 @@
 // preview controller
 const throttle = require('lodash.throttle');
-
 const vscode = acquireVsCodeApi();
-
+import myThrottle from '../utils/myThrottle'
 interface CodeLineElement{
     element:HTMLElement,
     line:number
@@ -18,14 +17,19 @@ class PreviewController {
         this.getCodeLineElements();
         this.initListener();
     }
-    
+    private setIsFromEditor = myThrottle(()=>{
+        this.isFromEditor = false;
+    },100);
     public initListener(){
         window.addEventListener('message',(e)=>{
-            this.isFromEditor = true;
-            this.scrollToRevealSourceLine(e.data.line);
-            setTimeout(()=>{
-                this.isFromEditor = false;
-            },100);
+            switch (e.data.command){
+                case 'changeTextEditorSelection':
+                    this.isFromEditor = true;
+                    this.scrollToRevealSourceLine(e.data.line);
+                    this.setIsFromEditor();
+                    return;
+                
+            }
         });
         window.addEventListener('scroll',throttle(()=>{
             if(this.isFromEditor) return;
@@ -46,9 +50,9 @@ class PreviewController {
         if (element.tagName === 'CODE' && element.parentElement && element.parentElement.tagName === 'PRE') {
         // Fenched code blocks are a special case since the `code-line` can only be marked on
         // the `<code>` element and not the parent `<pre>` element.
-        this.cachedElements.push({ element: element.parentElement as HTMLElement, line });
+            this.cachedElements.push({ element: element.parentElement as HTMLElement, line });
         } else {
-        this.cachedElements.push({ element: element as HTMLElement, line });
+            this.cachedElements.push({ element: element as HTMLElement, line });
         }
     }
     }
@@ -154,13 +158,13 @@ class PreviewController {
             const previousBounds = this.getElementBounds(previous);
             const offsetFromPrevious = (offset - window.scrollY - previousBounds.top);
             if (next) {
-            const progressBetweenElements = offsetFromPrevious / (this.getElementBounds(next).top - previousBounds.top);
-            const line = previous.line + progressBetweenElements * (next.line - previous.line);
-            return line;
+                const progressBetweenElements = offsetFromPrevious / (this.getElementBounds(next).top - previousBounds.top);
+                const line = previous.line + progressBetweenElements * (next.line - previous.line);
+                return line;
             } else {
-            const progressWithinElement = offsetFromPrevious / (previousBounds.height);
-            const line = previous.line + progressWithinElement;
-            return line;
+                const progressWithinElement = offsetFromPrevious / (previousBounds.height);
+                const line = previous.line + progressWithinElement;
+                return line;
             }
         }
         return null;
