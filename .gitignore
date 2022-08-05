@@ -127,5 +127,6 @@ dist
 .pnp.*
 
 vscode/
+vscode-web/
 public/
 .build/

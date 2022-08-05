@@ -1,0 +1,15 @@
+Adjust max memory so that gulp won't eat up all memory then being killed.
+
+diff --git a/package.json b/package.json
+index cc40aa5..d702356 100644
+--- a/package.json
++++ b/package.json
+@@ -30,7 +30,7 @@
+     "watch-extensionsd": "deemon yarn watch-extensions",
+     "kill-watch-extensionsd": "deemon --kill yarn watch-extensions",
+     "precommit": "node build/hygiene.js",
+-    "gulp": "node --max_old_space_size=8192 ./node_modules/gulp/bin/gulp.js",
++    "gulp": "node --max_old_space_size=5120 ./node_modules/gulp/bin/gulp.js",
+     "electron": "node build/lib/electron",
+     "7z": "7z",
+     "update-grammars": "node build/npm/update-all-grammars.mjs",
