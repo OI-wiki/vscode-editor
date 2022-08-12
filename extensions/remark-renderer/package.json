@@ -1,6 +1,7 @@
 {
 	"name": "remark-renderer",
 	"displayName": "RemarkRenderer",
+	"publisher": "oi-wiki",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
