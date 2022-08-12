@@ -1,5 +1,6 @@
 // preview controller
 const throttle = require('lodash.throttle');
+// @ts-ignore
 const vscode = acquireVsCodeApi();
 import myThrottle from '../utils/myThrottle'
 interface CodeLineElement{

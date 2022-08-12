@@ -1,6 +1,6 @@
-export default (fn,delay: number) => {
+export default (fn:any,delay: number) => {
     let  timer:NodeJS.Timeout | null = null;
-    return (...args) => {
+    return (...args:any[]) => {
         const context = this;
         if(timer) {
             clearTimeout(timer);

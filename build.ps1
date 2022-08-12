@@ -62,7 +62,9 @@ function Build-VeEditor {
     if (Test-Path ./public) {
         Remove-Item -Recurse -Force ./public
     }
-    
-    Copy-Item -Recurse ./shadow/* ./vscode-web/
+    New-Item -Path "." -Name "vscode-web" -ItemType "directory"
+    Copy-Item  -Path ./shadow/* -Destination ./vscode-web/ -Recurse
 }
-
+Clear-VeEnvironment
+Get-VeVSCodeRepository
+Build-VeEditor
