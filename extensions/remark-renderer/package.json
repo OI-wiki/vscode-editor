@@ -56,6 +56,8 @@
 	},
 	"dependencies": {
 		"lodash.throttle": "^4.1.1",
+		"magic-string": "^0.26.2",
+		"path-browserify": "^1.0.1",
 		"rehype-stringify": "^9.0.2",
 		"remark": "^14.0.2",
 		"remark-details": "^4.0.4",

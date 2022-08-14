@@ -37,7 +37,8 @@ const webExtensionConfig = {
 			// Webpack 5 no longer polyfills Node.js core modules automatically.
 			// see https://webpack.js.org/configuration/resolve/#resolvefallback
 			// for the list of Node.js core module polyfills.
-			'assert': require.resolve('assert')
+			'assert': require.resolve('assert'),
+			path: require.resolve('path-browserify'),
 		}
 	},
 	module: {
@@ -64,6 +65,7 @@ const webExtensionConfig = {
 	infrastructureLogging: {
 		level: "log", // enables logging required for problem matchers
 	},
+	
 };
 
 module.exports = [ webExtensionConfig ];

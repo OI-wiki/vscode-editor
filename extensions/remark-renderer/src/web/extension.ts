@@ -20,10 +20,16 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		);
 		const markdownPreview = new MarkdownPreview(panel,editor,context);
-		vscode.window.onDidChangeTextEditorSelection((e:vscode.TextEditorSelectionChangeEvent)=>{
-			const newText = e.textEditor.document.getText();
-			panel.webview.html = markdownPreview.getHtml(newText);
+		// init preview line
+		panel.webview.postMessage({
+			command: "changeTextEditorSelection",
+			// line:midLine,
+			line: editor["visibleRanges"][0].start.line,
 		});
+		vscode.window.onDidChangeTextEditorSelection(throttle(async (e:vscode.TextEditorSelectionChangeEvent)=>{
+			const newText = e.textEditor.document.getText();
+			panel.webview.html = await markdownPreview.getHtml(newText);
+		}),10000);
 		vscode.window.onDidChangeTextEditorVisibleRanges(throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
 			// const topLine = getTopVisibleLine(e.textEditor);
 			// const bottomLine = getBottomVisibleLine(e.textEditor);
