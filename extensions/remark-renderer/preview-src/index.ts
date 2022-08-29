@@ -27,7 +27,6 @@ class PreviewController {
             switch (e.data.command){
                 case 'changeTextEditorSelection':
                     this.isFromEditor = true;
-
                     this.scrollToRevealSourceLine(e.data.line);
                     this.setIsFromEditor();
                     return;
@@ -130,7 +129,6 @@ class PreviewController {
 
 
     public scrollToRevealSourceLine(line: number) {
-        console.log(line);
         
         if (line <= 0) {
             window.scroll(window.scrollX, 0);
