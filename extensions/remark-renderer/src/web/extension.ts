@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 				// line:midLine,
 				line: e.textEditor["visibleRanges"][0].start.line,
 			});
-		}),100);
+		}),16);
 	});
 
 	context.subscriptions.push(disposable);

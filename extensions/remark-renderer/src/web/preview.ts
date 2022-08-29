@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { getPipeline } from './remarkRenderer';
 import WebResource from './webresource';
 const throttle = require('lodash.throttle');
-import myThrottle from '../../utils/myThrottle';
+import delayThrottle from '../../utils/delayThrottle';
 import MagicString from 'magic-string';
 const renderer = getPipeline();
 
@@ -25,7 +25,7 @@ export default class MarkdownPreview {
 	private async initWebviewHtml(){
 		this._webviewPanel.webview.html = await this.getHtml(this._editor?.document.getText()?? "*No preview available*");
 	}
-	private setIsFromWebView = myThrottle(()=>{
+	private setIsFromWebView = delayThrottle(()=>{
 		this.isFromWebview = false;
 	},100);
     public handleMessage(){

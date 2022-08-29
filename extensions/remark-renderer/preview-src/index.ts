@@ -2,7 +2,7 @@
 const throttle = require('lodash.throttle');
 // @ts-ignore
 const vscode = acquireVsCodeApi();
-import myThrottle from '../utils/myThrottle'
+import delayThrottle from '../utils/delayThrottle';
 interface CodeLineElement{
     element:HTMLElement,
     line:number
@@ -13,12 +13,13 @@ class PreviewController {
 
     public codeLineClass = 'code-line';
     public isFromEditor: boolean = false;
+    // private currentOffset = 0;
 
     constructor(){
         this.getCodeLineElements();
         this.initListener();
     }
-    private setIsFromEditor = myThrottle(()=>{
+    private setIsFromEditor = delayThrottle(()=>{
         this.isFromEditor = false;
     },100);
     public initListener(){
@@ -26,20 +27,23 @@ class PreviewController {
             switch (e.data.command){
                 case 'changeTextEditorSelection':
                     this.isFromEditor = true;
+
                     this.scrollToRevealSourceLine(e.data.line);
                     this.setIsFromEditor();
                     return;
                 
             }
         });
-        window.addEventListener('scroll',throttle(()=>{
-            if(this.isFromEditor) return;
-            const line = this.getEditorLineNumberForPageOffset(window.scrollY);
-            vscode.postMessage({
-                command:'revealLine',
-                line
+        window.addEventListener('scroll',() => {
+            window.requestAnimationFrame(() =>{
+                if(this.isFromEditor) return;
+                const line = this.getEditorLineNumberForPageOffset(window.scrollY);
+                vscode.postMessage({
+                    command:'revealLine',
+                    line
+                });
             });
-        },100));
+        });
     }
     
     public getCodeLineElements(){
@@ -126,7 +130,8 @@ class PreviewController {
 
 
     public scrollToRevealSourceLine(line: number) {
-    
+        console.log(line);
+        
         if (line <= 0) {
             window.scroll(window.scrollX, 0);
             return;
@@ -149,7 +154,12 @@ class PreviewController {
             scrollTo = previousTop + (rect.height * progressInElement);
         }
         scrollTo = Math.abs(scrollTo) < 1 ? Math.sign(scrollTo) : scrollTo;
-        window.scroll(window.scrollX, Math.max(1, window.scrollY + scrollTo));
+        const offset = Math.max(1,window.scrollY + scrollTo);
+        // console.log(offset);
+        
+        // if(offset === this.currentOffset) return;
+        window.scroll(window.scrollX, offset);
+        // this.currentOffset = offset;
     }
 
 
