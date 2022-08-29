@@ -6,5 +6,5 @@ export default (fn:any,delay: number) => {
             clearTimeout(timer);
         }
         timer = setTimeout(fn.bind(context,...args),delay);
-    }
-}
+    };
+};
