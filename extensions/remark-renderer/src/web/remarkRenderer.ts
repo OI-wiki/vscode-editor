@@ -7,11 +7,13 @@ import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
+import remarkFrontmatter from 'remark-frontmatter';
 import rehypeSourceLine from './plugin/rehype-source-line';
 
 export function getPipeline() {
     return unified()
         .use(remarkParse)
+        .use(remarkFrontmatter, ['yaml', 'toml'])
         .use(remarkDirective)
         .use(remarkDetails)
         .use(remarkGfm)
