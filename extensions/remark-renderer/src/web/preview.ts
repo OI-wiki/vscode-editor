@@ -65,7 +65,6 @@ export default class MarkdownPreview {
 			const end = start + item[0].length;
 			const filePath = item[1].trim().slice(1,-1);
 			const uri = vscode.Uri.joinPath(rootPath[0].uri,filePath);
-			
 			try {
 				const uint8arr = await vscode.workspace.fs.readFile(uri);
 				// transform uint8arr to string
