@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getPipeline } from './remarkRenderer';
 import WebResource from './webresource';
 const throttle = require('lodash.throttle');
+import { stringifyEntities } from 'stringify-entities';
 import delayThrottle from '../../utils/delayThrottle';
 import MagicString from 'magic-string';
 const renderer = getPipeline();
@@ -68,6 +69,7 @@ export default class MarkdownPreview {
 				const uint8arr = await vscode.workspace.fs.readFile(uri);
 				// transform uint8arr to string
 				let content = new TextDecoder('utf-8').decode(uint8arr);
+				content = stringifyEntities(content,{subset:['<','&']})
 				s.overwrite(start,end,content);
 			} catch(err){
 				console.log(err);
