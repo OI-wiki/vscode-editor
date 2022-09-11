@@ -50,25 +50,24 @@ export default class MarkdownPreview {
 		);
     }
 	public async getHtml(md: string) : Promise<string> {
-		md = await this.insertSnippets(md);
 		const html = renderer.processSync(md).toString();
 		const webRes = new WebResource(this._webviewPanel.webview, this._context.extensionUri);
-		return webRes.genRenderHtml(html);
+		return await this.insertSnippets(webRes.genRenderHtml(html));
 	}
 	public async insertSnippets(rawText:string):Promise<string>{
 		const s = new MagicString(rawText);
 		// get rootpath
 		const rootPath = vscode.workspace.workspaceFolders ??[];
 		// match every import file grammar
-		for(const item of rawText.matchAll(/--8<--\s*(.*)/g)){
+		for(const item of rawText.matchAll(/--8&#x3C;--\s*['"](.*)['"]/g)){
 			const start = item.index ?? 0;
 			const end = start + item[0].length;
-			const filePath = item[1].trim().slice(1,-1);
+			const filePath = item[1].trim();
 			const uri = vscode.Uri.joinPath(rootPath[0].uri,filePath);
 			try {
 				const uint8arr = await vscode.workspace.fs.readFile(uri);
 				// transform uint8arr to string
-				const content = String.fromCharCode.apply(null,Array.from(uint8arr));
+				let content = new TextDecoder('utf-8').decode(uint8arr);
 				s.overwrite(start,end,content);
 			} catch(err){
 				console.log(err);

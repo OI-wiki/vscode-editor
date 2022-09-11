@@ -9,10 +9,13 @@ import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
 import remarkFrontmatter from 'remark-frontmatter';
 import rehypeSourceLine from './plugin/rehype-source-line';
+import remarkSnippets from './plugin/remark-snippets';
 
 export function getPipeline() {
     return unified()
         .use(remarkParse)
+        // .use(remarkSnippets)
+        // .use(()=>(tree)=>console.log('next'))
         .use(remarkFrontmatter, ['yaml', 'toml'])
         .use(remarkDirective)
         .use(remarkDetails)
@@ -20,5 +23,7 @@ export function getPipeline() {
         .use(remarkRehype, {allowDangerousHtml: true})
         .use(rehypeRaw)
         .use(rehypeSourceLine)
-        .use(rehypeStringify);
+        .use(rehypeStringify, {
+            quote:'"'
+        });
 }
