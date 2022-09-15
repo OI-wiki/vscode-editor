@@ -11,7 +11,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:remark-renderer.rendererView"
+		"onCommand:remark-renderer.rendererView",
+		"onLanguage:markdown"
 	],
 	"browser": "./dist/web/extension.js",
 	"contributes": {
@@ -20,13 +21,7 @@
 				"command": "remark-renderer.rendererView",
 				"title": "Remark Render View"
 			}
-		],
-		"snippets": [
-			{
-				"language": "markdown",
-				"path": "./snippets/snippets.json"
-			}
-		]
+		]	
 	},
 	"scripts": {
 		"test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
