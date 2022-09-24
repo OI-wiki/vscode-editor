@@ -4,7 +4,7 @@
 		"target": "es6",
 		"outDir": "dist",
 		"lib": [
-			"es6", "WebWorker","DOM"
+			"es6", "WebWorker","DOM", "es2020"
 		],
 		"sourceMap": true,
 		"rootDir": ".",

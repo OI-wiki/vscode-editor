@@ -36,8 +36,6 @@ export function activate(context: vscode.ExtensionContext) {
 		const textEditorVisibleRangesChange = throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
 			
 			if(markdownPreview.isFromWebview) return;
-			console.log('texteditorvis');
-
 			panel.webview.postMessage({
 				command: "changeTextEditorSelection",
 				// line:midLine,

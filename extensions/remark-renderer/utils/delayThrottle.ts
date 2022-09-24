@@ -1,5 +1,5 @@
 export default (fn:any,delay: number) => {
-    let  timer:NodeJS.Timeout | null = null;
+    let  timer:any | null = null;
     return (...args:any[]) => {
         const context = this;
         if(timer) {

@@ -52,18 +52,17 @@ function Build-VeEditor {
         if ($dir.Name -eq 'node_modules') {
             continue
         }
-
-        Copy-Item -Recurse -Destination "./extensions/" "$($dir.FullName)"
+        
+        New-Item -ItemType SymbolicLink -Path  ./extensions/$($dir.Name)  -Value $($dir.FullName)
+        # Copy-Item -Recurse -Destination "./extensions/" "$($dir.FullName)"
     }
-
+    
     yarn gulp vscode-web-min
     Pop-Location
 
     if (Test-Path ./public) {
         Remove-Item -Recurse -Force ./public
     }
-    if (!Test-Path ./vscode-web) {
-        New-Item -Path "." -Name "vscode-web" -ItemType "directory"
-    }
+
     Copy-Item  -Path ./shadow/* -Destination ./vscode-web/ -Recurse
 }
