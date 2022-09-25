@@ -11,6 +11,7 @@ export default class MarkdownPreview {
     private readonly _webviewPanel: vscode.WebviewPanel;
     private readonly _editor: vscode.TextEditor | undefined;
 	private readonly _context: vscode.ExtensionContext;
+	private webRes:WebResource;
 	public isFromWebview: boolean = false;
     constructor(
         webviewPanel: vscode.WebviewPanel,
@@ -22,6 +23,7 @@ export default class MarkdownPreview {
 		this._context = context;
 		this.initWebviewHtml();
 		this.handleMessage();
+		this.webRes = new WebResource(this._webviewPanel.webview, this._context.extensionUri);
 	}
 	private async initWebviewHtml(){
 		this._webviewPanel.webview.html = await this.getHtml(this._editor?.document.getText()?? "*No preview available*");
@@ -51,9 +53,13 @@ export default class MarkdownPreview {
 		);
     }
 	public async getHtml(md: string) : Promise<string> {
+		const htmlContent = await this.getHtmlContent(md);
+		return this.webRes.genRenderHtml(htmlContent);
+	}
+	public async getHtmlContent(md:string): Promise<string>{
 		const html = renderer.processSync(md).toString();
-		const webRes = new WebResource(this._webviewPanel.webview, this._context.extensionUri);
-		return await this.insertSnippets(webRes.genRenderHtml(html));
+		const content =  await this.insertSnippets(html);
+		return this.webRes.getBody(content);
 	}
 	public async insertSnippets(rawText:string):Promise<string>{
 		const s = new MagicString(rawText);

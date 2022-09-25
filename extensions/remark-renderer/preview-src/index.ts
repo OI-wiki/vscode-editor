@@ -30,7 +30,13 @@ class PreviewController {
                     this.scrollToRevealSourceLine(e.data.line);
                     this.setIsFromEditor();
                     return;
-                
+                case 'updateContent': 
+                    const root = document.querySelector('.md-typeset')!;
+                    const parser = new DOMParser();
+                    const newContent = parser.parseFromString(e.data.content, 'text/html'); 
+                    root.replaceWith(newContent.querySelector('.md-typeset')!);
+                    this.getCodeLineElements();
+                    return;
             }
         });
         window.addEventListener('scroll',() => {
@@ -46,19 +52,20 @@ class PreviewController {
     }
     
     public getCodeLineElements(){
-    for(const element of Array.from(document.getElementsByClassName(this.codeLineClass))){
-        const line = parseInt(element.getAttribute('data-line') as string);
-        if(isNaN(line)){
-        continue;
+        this.cachedElements = [];
+        for(const element of Array.from(document.getElementsByClassName(this.codeLineClass))){
+            const line = parseInt(element.getAttribute('data-line') as string);
+            if(isNaN(line)){
+                continue;
+            }
+            if (element.tagName === 'CODE' && element.parentElement && element.parentElement.tagName === 'PRE') {
+            // Fenched code blocks are a special case since the `code-line` can only be marked on
+            // the `<code>` element and not the parent `<pre>` element.
+                this.cachedElements.push({ element: element.parentElement as HTMLElement, line });
+            } else {
+                this.cachedElements.push({ element: element as HTMLElement, line });
+            }
         }
-        if (element.tagName === 'CODE' && element.parentElement && element.parentElement.tagName === 'PRE') {
-        // Fenched code blocks are a special case since the `code-line` can only be marked on
-        // the `<code>` element and not the parent `<pre>` element.
-            this.cachedElements.push({ element: element.parentElement as HTMLElement, line });
-        } else {
-            this.cachedElements.push({ element: element as HTMLElement, line });
-        }
-    }
     }
 
 
@@ -129,7 +136,7 @@ class PreviewController {
 
 
     public scrollToRevealSourceLine(line: number) {
-        
+         
         if (line <= 0) {
             window.scroll(window.scrollX, 0);
             return;

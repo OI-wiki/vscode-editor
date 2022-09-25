@@ -31,7 +31,11 @@ export function activate(context: vscode.ExtensionContext) {
 			const newText = e.textEditor.document.getText();
 			// if (content === newText) return;
 			// content = newText;		
-			panel.webview.html = await markdownPreview.getHtml(newText);
+			const content = await markdownPreview.getHtmlContent(newText);
+			panel.webview.postMessage({
+				command: 'updateContent',
+				content
+			});
 		},50);
 		const textEditorVisibleRangesChange = throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
 			

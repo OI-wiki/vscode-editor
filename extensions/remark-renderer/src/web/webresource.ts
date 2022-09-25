@@ -30,7 +30,9 @@ export default class WebResource {
     </style>
     `;
   }
-
+  getBody(content: string){
+    return `<article class="md-typeset">${content}</article>`;
+  }
   genRenderHtml(content: string): string {
     return `<!DOCTYPE html>
 		<html lang="en">
@@ -46,9 +48,7 @@ export default class WebResource {
         ${this.getFont()}
 		  </head>
 		  <body>
-			  <article class="md-typeset">
-				  ${content}
-			  </article>
+			 ${this.getBody(content)}
 		  </body>
       <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	  </html>`;
