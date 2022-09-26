@@ -21,7 +21,7 @@
 				"command": "remark-renderer.rendererView",
 				"title": "Remark Render View"
 			}
-		]	
+		]
 	},
 	"scripts": {
 		"test": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
@@ -53,6 +53,7 @@
 		"lodash.throttle": "^4.1.1",
 		"magic-string": "^0.26.2",
 		"path-browserify": "^1.0.1",
+		"rehype-mathjax": "^4.0.2",
 		"rehype-raw": "^6.1.1",
 		"rehype-stringify": "^9.0.2",
 		"remark": "^14.0.2",
@@ -60,6 +61,7 @@
 		"remark-directive": "^2.0.1",
 		"remark-frontmatter": "^4.0.1",
 		"remark-gfm": "^3.0.1",
+		"remark-math": "^5.1.1",
 		"remark-parse": "^10.0.1",
 		"remark-rehype": "^10.1.0",
 		"stringify-entities": "^4.0.3",

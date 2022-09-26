@@ -5,20 +5,22 @@ const throttle = require('lodash.throttle');
 import { stringifyEntities } from 'stringify-entities';
 import delayThrottle from '../../utils/delayThrottle';
 import MagicString from 'magic-string';
-const renderer = getPipeline();
 
 export default class MarkdownPreview {
     private readonly _webviewPanel: vscode.WebviewPanel;
     private readonly _editor: vscode.TextEditor | undefined;
 	private readonly _context: vscode.ExtensionContext;
 	private webRes:WebResource;
+	private renderer:any;
 	public isFromWebview: boolean = false;
     constructor(
         webviewPanel: vscode.WebviewPanel,
         editor: vscode.TextEditor | undefined,
 		context: vscode.ExtensionContext
     ){
+		
         this._webviewPanel = webviewPanel;
+		this.renderer = getPipeline(this._webviewPanel);
         this._editor = editor;
 		this._context = context;
 		this.initWebviewHtml();
@@ -57,7 +59,7 @@ export default class MarkdownPreview {
 		return this.webRes.genRenderHtml(htmlContent);
 	}
 	public async getHtmlContent(md:string): Promise<string>{
-		const html = renderer.processSync(md).toString();
+		const html = this.renderer.processSync(md).toString();
 		const content =  await this.insertSnippets(html);
 		return this.webRes.getBody(content);
 	}
@@ -75,7 +77,7 @@ export default class MarkdownPreview {
 				const uint8arr = await vscode.workspace.fs.readFile(uri);
 				// transform uint8arr to string
 				let content = new TextDecoder('utf-8').decode(uint8arr);
-				content = stringifyEntities(content,{subset:['<','&']})
+				content = stringifyEntities(content,{subset:['<','&']});
 				s.overwrite(start,end,content);
 			} catch(err){
 				console.log(err);
