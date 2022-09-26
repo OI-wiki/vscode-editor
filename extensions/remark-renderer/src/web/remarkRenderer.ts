@@ -9,7 +9,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
-import rehypeMathjax from 'rehype-mathjax';
+import rehypeKatex from 'rehype-katex';
 import rehypeSourceLine from './plugin/rehype-source-line';
 import remarkLocalImage from './plugin/remark-local-image';
 import { WebviewPanel } from 'vscode';
@@ -24,7 +24,7 @@ export function getPipeline(webviewPanel: WebviewPanel) {
         .use(remarkDetails)
         .use(remarkGfm)
         .use(remarkRehype, { allowDangerousHtml: true })
-        // .use(rehypeMathjax)
+        .use(rehypeKatex)
         .use(rehypeRaw)
         .use(rehypeSourceLine)
         .use(rehypeStringify, {
