@@ -18,7 +18,6 @@ export default class MarkdownPreview {
         editor: vscode.TextEditor | undefined,
 		context: vscode.ExtensionContext
     ){
-		
         this._webviewPanel = webviewPanel;
 		this.renderer = getPipeline(this._webviewPanel);
         this._editor = editor;
@@ -58,6 +57,7 @@ export default class MarkdownPreview {
 		const htmlContent = await this.getHtmlContent(md);
 		return this.webRes.genRenderHtml(htmlContent);
 	}
+	// get html body content
 	public async getHtmlContent(md:string): Promise<string>{
 		const html = this.renderer.processSync(md).toString();
 		const content =  await this.insertSnippets(html);

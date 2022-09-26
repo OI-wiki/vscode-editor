@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import WebResource from './webresource';
 import MarkdownPreview from './preview';
 
 const throttle = require('lodash.throttle');
@@ -37,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 		},50);
 		const textEditorVisibleRangesChange = throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
-			
+			// rangeChange caused by webview
 			if(markdownPreview.isFromWebview) return;
 			panel.webview.postMessage({
 				command: "changeTextEditorSelection",
