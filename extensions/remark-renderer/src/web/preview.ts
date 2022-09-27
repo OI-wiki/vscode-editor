@@ -8,7 +8,6 @@ import MagicString from 'magic-string';
 
 export default class MarkdownPreview {
     private _webviewPanel: vscode.WebviewPanel;
-    private _editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
 	private readonly _context: vscode.ExtensionContext;
 	private webRes:WebResource;
 	private _renderer:any;
@@ -19,18 +18,9 @@ export default class MarkdownPreview {
 		this._webviewPanel = this.createPanel();
 		this._renderer = getPipeline(this._webviewPanel);
 		this._context = context;
+		this.webRes = new WebResource(this._webviewPanel.webview, this._context.extensionUri);	
 		this.initWebviewHtml();
 		this.handleMessage();
-		this.webRes = new WebResource(this._webviewPanel.webview, this._context.extensionUri);
-		if(this._editor?.document.languageId !== 'markdown') {
-			vscode.window.showErrorMessage("It's not a markdown file");
-			return;
-		}
-		// init preview line
-		this._webviewPanel.webview.postMessage({
-			command: "changeTextEditorSelection",
-			line: this._editor["visibleRanges"][0].start.line,
-		});
 		this.registerEvent();
 	}
 	private  createPanel() {
@@ -45,27 +35,26 @@ export default class MarkdownPreview {
 	}
 
 	private async initWebviewHtml(){
-		this._webviewPanel.webview.html = await this.getHtml(this._editor?.document.getText()?? "*No preview available*");
+		const text = vscode.window.activeTextEditor?.document.getText();
+		this._webviewPanel.webview.html = await this.getHtml(text ?? "*No preview available*");
+		this.initLine();
 	}
-
-	private setIsFromWebView = delayThrottle(()=>{
-		this.isFromWebview = false;
-	},100);
 
     public handleMessage(){
         this._webviewPanel.webview.onDidReceiveMessage(
 			(message) => {
 			  switch (message.command){
 				case 'revealLine':
-					if(!this._editor) return;
+					const editor = vscode.window.activeTextEditor;
+					if(!editor) return;
 					this.isFromWebview = true;
 					const {line} = message;
 					if(!line) return;					
 					const sourceLine = Math.floor(line);
 					const fraction = line - sourceLine;
-					const text = this._editor.document.lineAt(sourceLine).text;
+					const text = editor.document.lineAt(sourceLine).text;
 					const start = Math.floor(fraction * text.length);
-					this._editor.revealRange(
+					editor.revealRange(
 						new vscode.Range(sourceLine, start, sourceLine + 1, 0),
 						vscode.TextEditorRevealType.AtTop);
 					this.setIsFromWebView();
@@ -94,11 +83,30 @@ export default class MarkdownPreview {
 				// line:midLine,
 				line: e.textEditor["visibleRanges"][0].start.line,
 			});
-		},16)
+		},16);
 		vscode.window.onDidChangeTextEditorSelection(textEditorSelectionChange);
 		
-		vscode.window.onDidChangeTextEditorVisibleRanges(textEditorVisibleRangesChange)
+		vscode.window.onDidChangeTextEditorVisibleRanges(textEditorVisibleRangesChange);
+
+		vscode.window.onDidChangeActiveTextEditor((e) => {
+			if (e?.document.languageId === 'markdown') {
+				this.initWebviewHtml();
+			}
+		});
 	}
+
+	// init preview line
+	public initLine() {
+		const line = vscode.window.activeTextEditor?.visibleRanges[0].start.line || 0;
+		this._webviewPanel.webview.postMessage({
+			command: "changeTextEditorSelection",
+			line
+		});	
+	}
+	private setIsFromWebView = delayThrottle(()=>{
+		this.isFromWebview = false;
+	},100);
+
 	public async getHtml(md: string) : Promise<string> {
 		const htmlContent = await this.getHtmlContent(md);
 		return this.webRes.genRenderHtml(htmlContent);
