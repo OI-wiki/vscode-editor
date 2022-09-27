@@ -9,7 +9,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
+import rehypeMathjax from 'rehype-mathjax/browser';
 import rehypeSourceLine from './plugin/rehype-source-line';
 import remarkLocalImage from './plugin/remark-local-image';
 import { WebviewPanel } from 'vscode';
@@ -18,13 +18,18 @@ export function getPipeline(webviewPanel: WebviewPanel) {
     return unified()
         .use(remarkParse)
         .use(remarkLocalImage(webviewPanel))
-        .use(remarkMath)
+        // .use(remarkMath)
         .use(remarkFrontmatter, ['yaml', 'toml'])
         .use(remarkDirective)
         .use(remarkDetails)
         .use(remarkGfm)
         .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeKatex)
+        // .use(rehypeMathjax, {
+        //     tex: {
+        //         displayMath: ['\[', '\]'],
+        //         inlineMath: ['\(', '\)']
+        //     }
+        // })
         .use(rehypeRaw)
         .use(rehypeSourceLine)
         .use(rehypeStringify, {

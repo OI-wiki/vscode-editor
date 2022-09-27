@@ -35,6 +35,8 @@ class PreviewController {
                     const parser = new DOMParser();
                     const newContent = parser.parseFromString(e.data.content, 'text/html'); 
                     root.replaceWith(newContent.querySelector('.md-typeset')!);
+                    // @ts-ignore
+                    MathJax.typeset();
                     this.getCodeLineElements();
                     return;
             }
