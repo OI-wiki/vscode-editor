@@ -13,20 +13,10 @@ const path = require('path');
 const webpack = require('webpack');
 
 /** @type WebpackConfig */
-const webExtensionConfig = {
+const config = {
 	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 	target: 'webworker', // extensions run in a webworker context
-	entry: {
-		'extension': './src/web/extension.ts',
-		'test/suite/index': './src/web/test/suite/index.ts',
-		'preview-src/index': './preview-src/index.ts'
-	},
-	output: {
-		filename: '[name].js',
-		path: path.join(__dirname, './dist/web'),
-		libraryTarget: 'commonjs',
-		devtoolModuleFilenameTemplate: '../../[resource-path]'
-	},
+	
 	resolve: {
 		mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
 		extensions: ['.ts', '.js'], // support ts-files and js-files
@@ -68,4 +58,28 @@ const webExtensionConfig = {
 	
 };
 
-module.exports = [ webExtensionConfig ];
+const webExtensionConfig = Object.assign({}, config, {
+	entry: {
+		'extension': './src/web/extension.ts',
+		'test/suite/index': './src/web/test/suite/index.ts',
+	},
+	output: {
+		filename: '[name].js',
+		path: path.join(__dirname, './dist/web'),
+		libraryTarget: 'commonjs',
+		devtoolModuleFilenameTemplate: '../../[resource-path]'
+	},
+});
+
+const previewSrcConfig = Object.assign({}, config, {
+	entry: {
+		'index': './preview-src/index.ts'
+	},
+	output: {
+		iife: true,
+		filename: '[name].js',
+		path: path.join(__dirname, './dist/preview-src'),
+		devtoolModuleFilenameTemplate: '../../[resource-path]'
+	},
+})
+module.exports = [ webExtensionConfig, previewSrcConfig ];
