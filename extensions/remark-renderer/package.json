@@ -11,7 +11,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:remark-renderer.rendererView"
+		"onCommand:remark-renderer.rendererView",
+		"onLanguage:markdown"
 	],
 	"browser": "./dist/web/extension.js",
 	"contributes": {
@@ -49,12 +50,20 @@
 		"webpack-cli": "^4.8.0"
 	},
 	"dependencies": {
+		"lodash.throttle": "^4.1.1",
+		"magic-string": "^0.26.2",
+		"path-browserify": "^1.0.1",
+		"rehype-raw": "^6.1.1",
 		"rehype-stringify": "^9.0.2",
 		"remark": "^14.0.2",
 		"remark-details": "^4.0.4",
 		"remark-directive": "^2.0.1",
+		"remark-frontmatter": "^4.0.1",
 		"remark-gfm": "^3.0.1",
 		"remark-parse": "^10.0.1",
-		"remark-rehype": "^10.1.0"
+		"remark-rehype": "^10.1.0",
+		"stringify-entities": "^4.0.3",
+		"unified": "^10.1.2",
+		"unist-util-visit": "^4.1.1"
 	}
 }

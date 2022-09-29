@@ -13,19 +13,10 @@ const path = require('path');
 const webpack = require('webpack');
 
 /** @type WebpackConfig */
-const webExtensionConfig = {
+const config = {
 	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 	target: 'webworker', // extensions run in a webworker context
-	entry: {
-		'extension': './src/web/extension.ts',
-		'test/suite/index': './src/web/test/suite/index.ts'
-	},
-	output: {
-		filename: '[name].js',
-		path: path.join(__dirname, './dist/web'),
-		libraryTarget: 'commonjs',
-		devtoolModuleFilenameTemplate: '../../[resource-path]'
-	},
+	
 	resolve: {
 		mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
 		extensions: ['.ts', '.js'], // support ts-files and js-files
@@ -36,7 +27,8 @@ const webExtensionConfig = {
 			// Webpack 5 no longer polyfills Node.js core modules automatically.
 			// see https://webpack.js.org/configuration/resolve/#resolvefallback
 			// for the list of Node.js core module polyfills.
-			'assert': require.resolve('assert')
+			'assert': require.resolve('assert'),
+			path: require.resolve('path-browserify'),
 		}
 	},
 	module: {
@@ -63,6 +55,31 @@ const webExtensionConfig = {
 	infrastructureLogging: {
 		level: "log", // enables logging required for problem matchers
 	},
+	
 };
 
-module.exports = [ webExtensionConfig ];
+const webExtensionConfig = Object.assign({}, config, {
+	entry: {
+		'extension': './src/web/extension.ts',
+		'test/suite/index': './src/web/test/suite/index.ts',
+	},
+	output: {
+		filename: '[name].js',
+		path: path.join(__dirname, './dist/web'),
+		libraryTarget: 'commonjs',
+		devtoolModuleFilenameTemplate: '../../[resource-path]'
+	},
+});
+
+const previewSrcConfig = Object.assign({}, config, {
+	entry: {
+		'index': './preview-src/index.ts'
+	},
+	output: {
+		iife: true,
+		filename: '[name].js',
+		path: path.join(__dirname, './dist/preview-src'),
+		devtoolModuleFilenameTemplate: '../../[resource-path]'
+	},
+})
+module.exports = [ webExtensionConfig, previewSrcConfig ];
