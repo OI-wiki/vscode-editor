@@ -46,10 +46,10 @@ export default class MarkdownPreview {
 			  switch (message.command){
 				case 'revealLine':
 					const editor = vscode.window.activeTextEditor;
-					if(!editor) return;
+					if(!editor) {return;}
 					this.isFromWebview = true;
 					const {line} = message;
-					if(!line) return;					
+					if(!line) {return;}					
 					const sourceLine = Math.floor(line);
 					const fraction = line - sourceLine;
 					const text = editor.document.lineAt(sourceLine).text;
@@ -65,7 +65,7 @@ export default class MarkdownPreview {
 
 	public registerEvent(){
 		const textEditorSelectionChange = throttle(async (e:vscode.TextEditorSelectionChangeEvent)=>{
-			if (!e.textEditor.document.fileName.endsWith('.md')) return;
+			if (!e.textEditor.document.fileName.endsWith('.md')) {return;}
 			const newText = e.textEditor.document.getText();
 			// if (content === newText) return;
 			// content = newText;		
@@ -77,7 +77,7 @@ export default class MarkdownPreview {
 		},16);
 		const textEditorVisibleRangesChange = throttle((e:vscode.TextEditorVisibleRangesChangeEvent)=>{
 			// rangeChange caused by webview
-			if(this.isFromWebview) return;
+			if(this.isFromWebview) {return;}
 			this._webviewPanel.webview.postMessage({
 				command: "changeTextEditorSelection",
 				// line:midLine,
