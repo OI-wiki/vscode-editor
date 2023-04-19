@@ -33,11 +33,11 @@ const config = {
 	},
 	module: {
 		rules: [{
-			test: /\.ts$/,
-			exclude: /node_modules/,
-			use: [{
-				loader: 'ts-loader'
-			}]
+			test: /\.[jt]sx?$/,
+			loader: 'esbuild-loader',
+			options: {
+				target: 'es2015'
+			}
 		}]
 	},
 	plugins: [
@@ -81,5 +81,5 @@ const previewSrcConfig = Object.assign({}, config, {
 		path: path.join(__dirname, './dist/preview-src'),
 		devtoolModuleFilenameTemplate: '../../[resource-path]'
 	},
-})
+});
 module.exports = [ webExtensionConfig, previewSrcConfig ];
