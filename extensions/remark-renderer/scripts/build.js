@@ -3,6 +3,7 @@ const polyfills = require("node-stdlib-browser");
 const esbuild = require("esbuild");
 (async () => {
     const globalShimsPath = require.resolve('node-stdlib-browser/helpers/esbuild/shim');
+	const start = Date.now();
 	const ctx = await esbuild.context({
 		entryPoints: {
 			extension: './src/web/extension.ts',
@@ -46,5 +47,6 @@ const esbuild = require("esbuild");
 	else {
 		await ctx.rebuild();
 		await ctx.dispose();
+		console.log(`✓ built in: ${Date.now() - start}ms`);
 	}
 })();
