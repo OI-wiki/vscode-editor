@@ -14,7 +14,7 @@
 		"onCommand:remark-renderer.rendererView",
 		"onLanguage:markdown"
 	],
-	"browser": "./dist/web/extension.js",
+	"browser": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{

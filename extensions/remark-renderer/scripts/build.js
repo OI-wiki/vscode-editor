@@ -1,11 +1,12 @@
 const esbuildPlugin = require("node-stdlib-browser/helpers/esbuild/plugin");
 const polyfills = require("node-stdlib-browser");
-
+const esbuild = require("esbuild");
 (async () => {
     const globalShimsPath = require.resolve('node-stdlib-browser/helpers/esbuild/shim');
-	const ctx = await require('esbuild').context({
+	const ctx = await esbuild.context({
 		entryPoints: {
-			extension: './src/web/extension.ts'
+			extension: './src/web/extension.ts',
+			preview: "./preview-src/index.ts"
 		},
 		bundle: true,
 		outdir: './dist',
@@ -37,6 +38,7 @@ const polyfills = require("node-stdlib-browser");
             },
           ],
 	});
+
 	if (process.argv.includes('--watch')) {
 		await ctx.watch();
 		console.log('watching...');

@@ -42,7 +42,7 @@ export default class WebResource {
 			  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${this.webview.cspSource} https:; script-src https://cdn.jsdelivr.net ${this.webview.cspSource}; style-src 'unsafe-inline' https://cdn.jsdelivr.net ${this.webview.cspSource}; font-src https://cdn.jsdelivr.net ${this.webview.cspSource};" />
 			  <title>Render Preview</title>
         <script src="${this.getPath("media","script.js")}"></script>
-        <script src="${this.getPath("dist","preview-src","index.js")}"></script>
+        <script src="${this.getPath("dist","preview.js")}"></script>
         ${this.getStyleLink("media", "style.css")}
 			  ${this.getStyleLink("media", "material.css")}
         ${this.getFont()}
