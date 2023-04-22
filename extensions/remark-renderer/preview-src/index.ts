@@ -1,5 +1,4 @@
 // preview controller
-const throttle = require('lodash.throttle');
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 import delayThrottle from '../utils/delayThrottle';
@@ -43,7 +42,7 @@ class PreviewController {
         });
         window.addEventListener('scroll',() => {
             window.requestAnimationFrame(() =>{
-                if(this.isFromEditor) return;
+                if(this.isFromEditor) {return;}
                 const line = this.getEditorLineNumberForPageOffset(window.scrollY);
                 vscode.postMessage({
                     command:'revealLine',
